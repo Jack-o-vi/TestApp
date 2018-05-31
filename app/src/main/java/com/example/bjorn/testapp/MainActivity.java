@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.example.bjorn.testapp.db.DBHelper;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,25 +44,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // создаем объект для данны
         ContentValues cv = new ContentValues();
 
-        String curTIME = getDateTime();
-        Log.d(LOG_TAG, "Current time: " + curTIME);
-        tvCur.setText("Current entering: " + curTIME);
+        String currentTime = getDateTime();
+        Log.d(LOG_TAG, "Current time: " + currentTime);
+        tvCur.setText("Current entering: " + currentTime);
         getPrevDate(db);
-        cv.put("dt", curTIME);
-        // вставляем запись и получаем ее ID
-        long rowID = db.insert(dbHelper.getDatabaseName(), null, cv);
+        addTimeToDB(currentTime, db);
         btnHistory.setOnClickListener(this);
         db.close();
         dbHelper.close();
     }
 
+    /**
+     * @param currentTime
+     * @param db
+     */
+    private  void addTimeToDB(String currentTime, SQLiteDatabase db){
+        // создаем объект для данны
+        ContentValues cv = new ContentValues();
+        cv.put("dt", currentTime);
+        // вставляем запись и получаем ее ID
+        db.insert(dbHelper.getDatabaseName(), null, cv);
+    }
 
+    /**
+     * @param db is a created and open SQLiteDatabase
+     */
     private void getPrevDate(SQLiteDatabase db) {
         String selectQuery = "SELECT  * FROM " + dbHelper.getDatabaseName();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToLast();
-        String dt;
-        //if (cursor.moveToNext()) {
+        if(cursor != null){
+            String dt;
             int timeID = cursor.getColumnIndex("dt");
             dt = cursor.getString(timeID);
             Log.d(LOG_TAG, "getPrev " + dt);
@@ -72,35 +83,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 Log.e("[MainActivity]", "No prev dtime");
             }
-        //}
-
+        }
         cursor.close();
     }
 
-
+    /**
+     * @return currentTimeStr
+     */
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "HH:mm:ss", Locale.getDefault());
         Date currentTime = Calendar.getInstance().getTime();
-        String currentDateandTime = dateFormat.format(currentTime);
-        return currentDateandTime;
+        String currentTimeStr = dateFormat.format(currentTime);
+        return currentTimeStr;
     }
 
-    private String parseDate(String date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-
-        try {
-            return formatter.parse(date).toString();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
+    /**
+     * After clicking on the btn calls the HistoryActivity
+     *
+     * @param v
+     */
     @Override
     public void onClick(View v) {
-        Intent intent = null;
+        Intent intent;
         intent = new Intent(this, HistoryActivity.class);
         startActivityForResult(intent, 0);
     }

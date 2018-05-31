@@ -31,7 +31,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         // подключаемся к БД
         try (SQLiteDatabase db = dbHelper.getWritableDatabase()) {
-            onRefresh(db);
+            outputHistory(db);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -41,9 +41,12 @@ public class HistoryActivity extends AppCompatActivity {
 
     }
 
-    public void onRefresh(SQLiteDatabase db) {
+    /**
+     * @param db
+     */
+    public List<String> getListHistory(SQLiteDatabase db) {
         Cursor c = db.query(dbHelper.getDatabaseName(), null, null, null, null, null, null);
-        List<String> times = new ArrayList<>();
+        List<String> timeHistory = new ArrayList<>();
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
@@ -51,7 +54,7 @@ public class HistoryActivity extends AppCompatActivity {
             int timeID = c.getColumnIndex("dt");
 
             do {
-                times.add(c.getString(timeID));
+                timeHistory.add(c.getString(timeID));
 
                 // переход на следующую строку
                 // а если следующей нет (текущая - последняя), то false - выходим из цикла
@@ -59,12 +62,17 @@ public class HistoryActivity extends AppCompatActivity {
         } else
             Log.d("HISTORY", "0 rows");
 
-        LinearLayout linLayout = findViewById(R.id.linLayout);
+        c.close();
+        return  timeHistory;
+    }
 
+    public void outputHistory(SQLiteDatabase db){
+        List<String> timeHistory = getListHistory(db);
+        LinearLayout linLayout = findViewById(R.id.linLayout);
         LayoutInflater ltInflater = getLayoutInflater();
         int[] colors = {Color.parseColor("#559966CC"), Color.parseColor("#55336699")};
         int i = 0;
-        for (String b : times) {
+        for (String b : timeHistory) {
             View item = ltInflater.inflate(R.layout.item, linLayout, false);
             TextView tvName = item.findViewById(R.id.tvName);
             tvName.setText("Time: " + b);
@@ -72,9 +80,6 @@ public class HistoryActivity extends AppCompatActivity {
             item.setBackgroundColor(colors[i++ % 2]);
             linLayout.addView(item);
         }
-
-        c.close();
-
     }
 
 }
