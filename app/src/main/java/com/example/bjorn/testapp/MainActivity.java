@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // создаем объект для данны
         ContentValues cv = new ContentValues();
 
+      //  int clearCount = db.delete(dbHelper.getDatabaseName(), null, null);
+
         String currentTime = getDateTime();
         Log.d(LOG_TAG, "Current time: " + currentTime);
         tvCur.setText("Current entering: " + currentTime);
@@ -80,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getPrevDate(SQLiteDatabase db) {
         String selectQuery = "SELECT  * FROM " + dbHelper.getDatabaseName();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        cursor.moveToLast();
-        if(cursor != null){
+
+        if(cursor.moveToLast()){
             String dt;
             int timeID = cursor.getColumnIndex("dt");
             dt = cursor.getString(timeID);
