@@ -18,6 +18,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Main activity class.
+ * @author Vitaly Zeenko
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static final String LOG_TAG = "[MainActivity]";
@@ -26,6 +30,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnHistory;
     private DBHelper dbHelper;
 
+    /**
+     * Called when the activity is first created.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

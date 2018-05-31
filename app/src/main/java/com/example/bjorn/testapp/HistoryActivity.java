@@ -17,18 +17,27 @@ import com.example.bjorn.testapp.db.DBHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
+/**
+ * In this activity contains only the list of time of all previous application`s openings.
+ *
+ * @author Vitaly Zeenko
+ */
 public class HistoryActivity extends AppCompatActivity {
 
+    /** */
     private DBHelper dbHelper;
 
+    /**
+     * Called when the activity is first created.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
-// создаем объект для создания и управления версиями БД
+        // создаем объект для создания и управления версиями БД
         dbHelper = new DBHelper(this);
 
         // подключаемся к БД
@@ -49,6 +58,7 @@ public class HistoryActivity extends AppCompatActivity {
     public List<String> getListHistory(SQLiteDatabase db) {
         Cursor c = db.query(dbHelper.getDatabaseName(), null, null, null, null, null, null);
         List<String> timeHistory = new ArrayList<>();
+
         // ставим позицию курсора на первую строку выборки
         // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
@@ -65,11 +75,15 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d("HISTORY", "0 rows");
 
         c.close();
-        return  timeHistory;
+        return timeHistory;
     }
 
 
-    public void outputHistory(SQLiteDatabase db){
+    /**
+     * Outputs the list from database.
+     * @param db
+     */
+    public void outputHistory(SQLiteDatabase db) {
         List<String> timeHistory = getListHistory(db);
         LinearLayout linLayout = findViewById(R.id.linLayout);
         LayoutInflater ltInflater = getLayoutInflater();
@@ -84,11 +98,7 @@ public class HistoryActivity extends AppCompatActivity {
             tvName.setText("Time: " + b);
             item.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
             item.setBackgroundColor(colors[i++ % 2]);
-
-
-
             linLayout.addView(item);
         }
     }
-
 }
