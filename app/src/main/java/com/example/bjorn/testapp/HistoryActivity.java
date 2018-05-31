@@ -16,6 +16,8 @@ import android.widget.TextView;
 import com.example.bjorn.testapp.db.DBHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -66,18 +68,25 @@ public class HistoryActivity extends AppCompatActivity {
         return  timeHistory;
     }
 
+
     public void outputHistory(SQLiteDatabase db){
         List<String> timeHistory = getListHistory(db);
         LinearLayout linLayout = findViewById(R.id.linLayout);
         LayoutInflater ltInflater = getLayoutInflater();
         int[] colors = {Color.parseColor("#559966CC"), Color.parseColor("#55336699")};
         int i = 0;
+
+        // Output from the previous enter to the latest
+        Collections.reverse(timeHistory);
         for (String b : timeHistory) {
             View item = ltInflater.inflate(R.layout.item, linLayout, false);
             TextView tvName = item.findViewById(R.id.tvName);
             tvName.setText("Time: " + b);
             item.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
             item.setBackgroundColor(colors[i++ % 2]);
+
+
+
             linLayout.addView(item);
         }
     }
