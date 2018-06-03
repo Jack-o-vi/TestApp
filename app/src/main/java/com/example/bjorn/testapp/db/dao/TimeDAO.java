@@ -12,6 +12,9 @@ import com.example.bjorn.testapp.db.DBManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO for time.
+ */
 public class TimeDAO {
 
     private DBManager dbManager;
