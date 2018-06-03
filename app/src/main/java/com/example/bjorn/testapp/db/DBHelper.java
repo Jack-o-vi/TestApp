@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * @return database`s name
      */
-    public static String getDbName() {
+    public static String getDBName() {
         return dbName;
     }
 
